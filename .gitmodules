@@ -1,0 +1,3 @@
+[submodule "lib/ngx_cc"]
+	path = lib/ngx_cc
+	url = https://github.com/aimingoo/ngx_cc.git
