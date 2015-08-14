@@ -166,8 +166,10 @@ n4c = {
 	-- Events and event loop
 	doRequestBegin = function(uri, method, params) .. end,
 	doBodyFilter = function(chunk, eof) .. end,
-	doResponseEnd = function() .. end,
 	doSessionClose = function() .. end,
+
+	-- privated
+	doResponseEnd = function(uri, bodySize, buffered) .. end,
 
 	-- utilities or helper
 	stat = function() .. end,  -- return a stat object
@@ -225,9 +227,32 @@ and, you must update nginx.conf for his location settings:
 		rewrite_by_lua 'n4c.doRequestBegin(true);';
 	}
 ```
-# more event handles
+# Event handles
+please handle Events by registed script module. the list of handles for per event:
+```text
+doRequestBegin = function(uri, method, params)
+------ 
+   onRequestBegin
+   onInternalRequestBegin
 
-please read these cases:
+doBodyFilter = function(chunk, eof)
+------ 
+   onBodyFilter
+   onInternalBodyFilter
+
+doResponseEnd = function(uri, bodySize, buffered)
+------ 
+   onResponseEnd
+   onInternalResponseEnd
+
+doSessionClose = function()
+------ 
+   onSessionClose
+   onInternalSessionClose
+```
+the ngx.doResponseEnd() is privated, non publish interface but can handle it.
+
+please read these cases for register handles:
 
 > @see: $(ngx_4c)/scripts/n4cStatusReport.lua
 >
