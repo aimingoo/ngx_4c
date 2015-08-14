@@ -52,8 +52,8 @@ end)
 
 -- invoke /_/api?transferServer at super 
 events.on('RequestBegin', function(uri, method, params)
-	if (uri == route_uri) and arg.transferServer then
-		ngx_cc.transfer(arg.to, arg.channels or '*', arg.clients or '*')
+	if (uri == route_uri) and params.transferServer then
+		ngx_cc.transfer(params.to, params.channels or '*', params.clients or '*')
 		ngx.say('Okay')
 		ngx.exit(ngx.HTTP_OK)
 	end
