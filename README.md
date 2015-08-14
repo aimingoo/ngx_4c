@@ -76,15 +76,15 @@ n4c.startWorker = function()
 	local events = require('lib.Events'):new()
 	require('ngx_4c').apply(n4c, events)
 
-	events.on('RequestBegin', function(uri, method, arg)
+	events.on('RequestBegin', function(uri, method, params)
 		if uri == '/hello' then
 			ngx.say('hello, world.')
 		end
 	end)
 
-	events.on('RequestBegin', function(uri, method, arg)
+	events.on('RequestBegin', function(uri, method, params)
 		if uri == '/hi' then
-			ngx.say('hi, ' .. arg.name or 'guest')
+			ngx.say('hi, ' .. params.name or 'guest')
 		end
 	end)
 end
@@ -121,7 +121,7 @@ hi, aimingoo
 ```lua
 -- /scripts/webapp_demo.lua
 local t = {}
-t.onRequestBegin = function(uri, method, arg)
+t.onRequestBegin = function(uri, method, params)
 	if uri == '/test' then
 		local atPerWorker, r_ok, r_resps = route.isInvokeAtPer();
 		if atPerWorker then
