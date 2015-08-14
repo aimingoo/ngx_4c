@@ -70,6 +70,7 @@ http {
  - init.lua
 
 ```lua
+n4c = {}
 n4c.startWorker = function()
 	-- NGX_4C launcher, with multicast events
 	local events = require('lib.Events'):new()
@@ -119,6 +120,7 @@ hi, aimingoo
 
 ```lua
 -- /scripts/webapp_demo.lua
+local t = {}
 t.onRequestBegin = function(uri, method, arg)
 	if uri == '/test' then
 		local atPerWorker, r_ok, r_resps = route.isInvokeAtPer();
@@ -129,6 +131,7 @@ t.onRequestBegin = function(uri, method, arg)
 		end
 	end)
 end
+return t
 ```
 
 at last, add next line into init.lua
@@ -148,7 +151,7 @@ hi, work at xxxx
 
 > @see: $(ngx_4c)/ngx_4c.lua
 
-```json
+```lua
 n4c = {
 	-- for ngx_cc
 	configuration = {
