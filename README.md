@@ -121,7 +121,7 @@ hi, aimingoo
 ```lua
 -- /scripts/webapp_demo.lua
 local t = {}
-t.onRequestBegin = function(uri, method, params)
+t.doRequestBegin = function(uri, method, params)
 	if uri == '/test' then
 		local atPerWorker, r_ok, r_resps = route.isInvokeAtPer();
 		if atPerWorker then
@@ -232,25 +232,25 @@ please handle Events by registed script module. the list of handles for per even
 ```text
 doRequestBegin = function(uri, method, params)
 ------ 
-   onRequestBegin
-   onInternalRequestBegin
+   doRequestBegin
+   doInternalRequestBegin
 
 doBodyFilter = function(chunk, eof)
 ------ 
-   onBodyFilter
-   onInternalBodyFilter
+   doBodyFilter
+   doInternalBodyFilter
 
 doResponseEnd = function(uri, bodySize, buffered)
 ------ 
-   onResponseEnd
-   onInternalResponseEnd
+   doResponseEnd
+   doInternalResponseEnd
 
 doSessionClose = function()
 ------ 
-   onSessionClose
-   onInternalSessionClose
+   doSessionClose
+   doInternalSessionClose
 ```
-the ngx.doResponseEnd() is privated, non publish interface but can handle it.
+the n4c.doResponseEnd() is privated, non publish interface but can handle it.
 
 please read these cases for register handles:
 
