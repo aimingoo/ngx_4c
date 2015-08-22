@@ -11,11 +11,9 @@ main features:
 - modular application framework, scripting and dynamic loadding
 
 # Install & Usage
-you need recomplie nginx for ngx_cc, detail in here: [ngx_cc environment requirements](https://github.com/aimingoo/ngx_cc#environment).
+if need ngx_cc integrate, you must recomplie nginx. the detail in here: [ngx_cc environment requirements](https://github.com/aimingoo/ngx_cc#environment). no dependency require of other case.
 
-try [test in the nginx environment](https://github.com/aimingoo/ngx_cc#4-test-in-the-nginx-environment) first, please.
-
-next step, clone the ngx_4c project from github, get all sub-modules.
+for ngx_cc integrated, please try [test in the nginx environment](https://github.com/aimingoo/ngx_cc#4-test-in-the-nginx-environment) first, and clone the ngx_4c project from github, get all sub-modules.
 ```
 > cd ~
 > git clone https://github.com/aimingoo/ngx_4c
