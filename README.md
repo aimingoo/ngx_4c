@@ -10,15 +10,16 @@ main features:
 - ngx_cc integrated, support cluster communication
 - modular application framework, scripting and dynamic loadding
 
-The contents of current document:
-> * [Install & Usage](#install--usage)
-> * [Events and event loop](#events-and-event-loop)
-> * [ngx_cc integrated](#ngx-cc-integrated)
-> * [PEDT: Distribution task module](#pedt-distribution task-module)
-> * [N4C standard interfaces](#n4c-standard-interfaces)
-> * [Customizable headers in ngx_cc, or sub-request](#customizable-headers-in-ngx_cc-or-sub-request)
-> * [Event handles](#[event-handles)
-> * [History and update](#history)
+###Table of Contents
+  * [Install &amp; Usage](#install--usage)
+  * [Events and event loop](#events-and-event-loop)
+  * [ngx_cc integrated](#ngx_cc-integrated)
+  * [PEDT: Distribution task module](#pedt-distribution-task-module)
+  * [N4C standard interfaces](#n4c-standard-interfaces)
+  * [N4C core framework](#n4c-core-framework)
+  * [Customizable headers in ngx_cc, or sub-request](#customizable-headers-in-ngx_cc-or-sub-request)
+  * [Event handles](#event-handles)
+  * [History](#history)
 
 # Install & Usage
 if need ngx_cc integrate, you must recomplie nginx. the detail in here: [ngx_cc environment requirements](https://github.com/aimingoo/ngx_cc#environment). no dependency require of other case.
@@ -363,7 +364,7 @@ please read these cases for register handles:
 >
 > @see: $(ngx_4c)/testcase/t_nginx_phases.lua
 
-## History
+# History
 ```text
 2015.11	release v0.9.1, support PEDT distribution task
 	- require tundrawolf (a implement of PEDT specification )
