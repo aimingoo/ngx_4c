@@ -3,6 +3,8 @@ n4c programming architecture, a Controllable, Computable and Communication Clust
 
 n4c depend ngx_cc to build communication cluster, use Multi-cast events drive application framework. it invoke by nginx phases, and built-in standard API in the framework.
 
+about N4C architecture  @see [n4c project](https://github.com/aimingoo/n4c).
+
 main features:
 - events - very simple, cool!
 - consistency event loop
