@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
--- Multicast Events in lua v1.0.0
+-- Multicast Events in lua v1.0.1
 -- Author: aimingoo@wandoujia.com
--- Copyright (c) 2015.05
+-- Copyright (c) 2015.08
 --
 -- The Multicast module from NGX_4C architecture
 --	1) N4C is programming framework.

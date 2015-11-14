@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
--- NGX_4C v0.9.0
+-- NGX_4C v0.9.1
 -- Author: aimingoo@wandoujia.com
--- Copyright (c) 2015.05
+-- Copyright (c) 2015.11
 -- Descition:　n4c programming architecture, the Controllable, Computable and Communication Cluster in nginx.
 --
 -- Usage:
@@ -16,6 +16,15 @@ return {
 			local saved_uri = ngx.var.saved_uri
 			return ngx.re.match(saved_uri == "" and ngx.var.uri or saved_uri or "",
 				'^/[^/]+/(cast|invoke|hub)', 'o') ~= nil
+		end
+
+		local function log_module_loaded(mod)
+			for modName, loaded in pairs(package.loaded) do
+				if mod == loaded then
+					ngx.log(ngx.ALERT, modName, ' loaded in ', ngx.worker.pid(), ' at port ', ngx.worker.port())
+					break;
+				end
+			end
 		end
 
 		local internal_doRequestBegin = function(is_n4c_casting)
@@ -88,12 +97,15 @@ return {
 		framework.stat = function() return counter end
 
 		-- Utils: simple script register
-		framework.register = function(scriptObject)
+		framework.register = function(scriptObject, ...)
 			for key, value, prefix in pairs(scriptObject) do
 				prefix = key:sub(1, 2)
 				if prefix == 'do' then -- ignore prefix
 					events.on(key:sub(3), value)
 				end
+			end
+			if scriptObject.run and pcall(scriptObject.run, scriptObject, ...) then
+				log_module_loaded(scriptObject)
 			end
 		end
 

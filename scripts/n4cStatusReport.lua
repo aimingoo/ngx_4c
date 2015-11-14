@@ -4,7 +4,7 @@ local t = {
 	desc = 'n4c framework core status report'
 }
 
-local mix = require('lib.mix')
+local mix = require('lib.Utils').mix
 local encode = require('cjson').encode
 local decode = require('cjson').decode
 local route_uri = '/'..n4c.configuration.default_channel_name..'/api'	-- /N4C/api

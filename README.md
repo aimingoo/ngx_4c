@@ -10,11 +10,21 @@ main features:
 - ngx_cc integrated, support cluster communication
 - modular application framework, scripting and dynamic loadding
 
+The contents of current document:
+> * [Install & Usage](#install--usage)
+> * [Events and event loop](#events-and-event-loop)
+> * [ngx_cc integrated](#ngx-cc-integrated)
+> * [PEDT: Distribution task module](#pedt-distribution task-module)
+> * [N4C standard interfaces](#n4c-standard-interfaces)
+> * [Customizable headers in ngx_cc, or sub-request](#customizable-headers-in-ngx_cc-or-sub-request)
+> * [Event handles](#[event-handles)
+> * [History and update](#history)
+
 # Install & Usage
 if need ngx_cc integrate, you must recomplie nginx. the detail in here: [ngx_cc environment requirements](https://github.com/aimingoo/ngx_cc#environment). no dependency require of other case.
 
 for ngx_cc integrated, please try [test in the nginx environment](https://github.com/aimingoo/ngx_cc#4-test-in-the-nginx-environment) first, and clone the ngx_4c project from github, get all sub-modules.
-```
+```bash
 > cd ~
 > git clone https://github.com/aimingoo/ngx_4c
 
@@ -22,12 +32,19 @@ for ngx_cc integrated, please try [test in the nginx environment](https://github
 > bash ./SUB_MODULES.sh
 ```
 and run testcase:
-```
+```bash
 #(into builded nginx directory)
 # run bin/nginx with -p parament to set prefix
 #	- will start nginx with $prefix/conf/nginx.conf by default
-> sudo sbin/nginx -p ~/ngx_4c/nginx
+> sudo sbin/nginx -p "${HOME}/ngx_4c/nginx"
 ```
+> note1: add these paths to nginx.conf in your project:
+> * $prefix../?.lua;
+> * $prefix../lib/?.lua;
+
+> note2: if require other module(ex: ngx_cc or tundrawolf), push them to $(ngx_4c)/lib/, and append paths into nginx.conf:
+> * $prefix../lib/ngx_cc/?.lua;
+> * $prefix../lib/tundrawolf/?.lua;
 
 # Events and event loop
 the Events is a lua module, it's multi-cast, multi-handles and lightweight event framework. @see:
@@ -144,6 +161,87 @@ hi, work at xxxx
 hi, work at xxxx
 hi, work at xxxx
 ```
+# PEDT: Distribution task module
+
+(1) require tundrawolf project
+```bash
+> cd lib
+> run SUB_MODULES.sh
+```
+
+(2) update nginx.conf
+```conf
+.....
+lua_package_path '.....;$prefix../lib/tundrawolf/?.lua;;';
+```
+
+(3) load distribution task modules
+> @see $(ngx_4c)/init.lua
+
+```lua
+...
+	-- NGX_4C framework scripts extra - Distrbution task architecture
+	n4c.register(require('scripts.n4cDistrbutionTaskNode'))
+	-- n4c.register(require('scripts.n4cNodeTimer'))
+	require('module.n4c_executor').apply(route)
+	require('module.n4c_resource_node').apply(route)
+
+	-- NGX_4C Distrbution task architecture - extended routes
+	n4c:require('n4c.system.discoveries'):andThen(function(discoveries)
+		mix(discoveries, require('routes.routes_ngxcc').new(n4c.configuration.default_channel_name), true)
+	end)
+...
+```
+
+(4) testcase
+load test module, @see $(ngx_4c)/init.lua
+```conf
+...
+	-- testcases, or more business processes
+	n4c.register(require('testcase.t_pedt'))
+...
+```
+and test in shell:
+```bash
+> # 1. test environment: install etcd and sandpiper for testcases
+> brew install etcd etcdctl
+> etcd
+> cd ~
+> git clone 'http://github.com/aimingoo/sandpiper'
+> cd sandpiper
+> npm install
+> # 2. run sandpiper as daemon
+> npm start
+> # 3. start new shell, run again
+> node testcase/t_tasks.js
+
+> # 4. start new shell, and run nginx with test config.conf
+> # 	- $(nginx_home) is home directory of nginx
+> cd $(nginx_home)/sbin
+> sudo nginx ./nginx -p "${HOME}/ngx_4c/nginx"
+
+> # 5. run testcase
+> curl -s 'http://localhost/n4c/test'
+[ {
+  "a": "1",
+  "b": "2",
+  "c": "3",
+  "info": "HELLO",
+  "p1": "default value"
+} ]
+> curl -s 'http://localhost/n4c/system_routes'
+{
+  "n4c.system.discoveries": ::function::,
+  "n4c:ngx_cc.N4C.registed.clients:*": ::function::,
+  "n4c:ngx_cc.N4C.registed.master:*": ::function::,
+  "n4c:ngx_cc.N4C.registed.super:*": ::function::,
+  "n4c:ngx_cc.N4C.registed.workers:*": ::function::,
+  "ngx_cc.N4C.registed.clients": ::function::,
+  "ngx_cc.N4C.registed.master": ::function::,
+  "ngx_cc.N4C.registed.super": ::function::,
+  "ngx_cc.N4C.registed.workers": ::function::
+}
+```
 
 # N4C standard interfaces
 
@@ -155,6 +253,15 @@ n4c = {
 	configuration = {
 		default_channel_name = 'N4C',	-- channel name of ngx_cc
 		max_buffered_length = 4096,		-- for n4c cached repsponse body
+
+		-- more configuration of n4c expand or 3rd modules
+		n4c_resource_group = '..',
+		n4c_resource_notify_uri = '..',
+		n4c_resource_query_uri = '..',
+		n4c_execute_uri = '..',
+		n4c_external_host = '..',
+		etcd_server = { url = '..' },
+		..
 	},
 	super = DEFAULT_CONIFG_SUPER,		-- default is 127.0.0.1:80
 
@@ -171,7 +278,7 @@ n4c = {
 
 	-- utilities or helper
 	stat = function() .. end,  -- return a stat object
-	register = function(scriptObject) .. end, -- load scriptObject
+	register = function(scriptObject, ...) .. end, -- load scriptObject, and run main method with arguments
 }
 ```
 
@@ -252,6 +359,19 @@ the n4c.doResponseEnd() is privated, non publish interface but can handle it.
 
 please read these cases for register handles:
 
-> @see: $(ngx_4c)/scripts/n4cStatusReport.lua
+> @see: $(ngx_4c)/scripts/*
 >
 > @see: $(ngx_4c)/testcase/t_nginx_phases.lua
+
+## History
+```text
+2015.11	release v0.9.1, support PEDT distribution task
+	- require tundrawolf (a implement of PEDT specification )
+	- support PEDT resource/task node
+	- support ngx_cc node/worker processes as PEDT nodes
+
+2015.08	release v0.9.0
+	- N4C programming architecture standard interfaces and examples
+	- support ngx_cc integrated
+	- support customizable headers for ngx_cc or sub-requests
+```

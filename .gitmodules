@@ -1,3 +1,6 @@
 [submodule "lib/ngx_cc"]
 	path = lib/ngx_cc
 	url = https://github.com/aimingoo/ngx_cc.git
+[submodule "lib/tundrawolf"]
+	path = lib/tundrawolf
+	url = https://github.com/aimingoo/tundrawolf

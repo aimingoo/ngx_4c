@@ -6,7 +6,7 @@
 local t = {
 	version = '2.0.0',
 	scope = 'workers', -- root/clients/workers/root:workers
-	desc = '测试：nginx phases checker'
+	desc = 'test: nginx phases checker'
 }
 
 local function log(...)
